@@ -47,8 +47,12 @@
             border-color: black !important;
         }
 
-        .dark #bm:hover, .dark .message {
+        .dark #bm:hover, .dark .message, .dark .button svg {
             background: #3b4144;
+        }
+
+        .dark .button svg {
+            fill: white;
         }
 
         .dark * {
@@ -61,8 +65,12 @@
             border-color: #a8a8a8 !important;
         }
 
-        .light #bm:hover, .light .message {
+        .light #bm:hover, .light .message, .light .button svg {
             background: #eaeaea;
+        }
+
+        .light .button svg {
+            fill: black;
         }
 
         .light * {
@@ -75,11 +83,17 @@
             text-align: center;
             height: 100%;
             transition: all .2s;
-            border-right: 1px solid;
         }
 
         #bm_logo {
             width: 200px;
+        }
+
+        #events-container {
+            display: flex;
+            overflow: hidden;
+            position: relative;
+            transition: all .3s;
         }
 
         .event {
@@ -139,6 +153,31 @@
             transform: rotateY(0deg);
             transition: all .2s .2s;
         }
+
+        .button {
+            height: 100%;
+            flex-shrink: 0;
+            width: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .button svg {
+            width: 100%;
+            height: 50px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+        .button.left {
+            border-right: 1px solid;
+        }
+
+        .button.right {
+            right: -10px;
+        }
+
     </style>
 </head>
 <body style="margin: 0">
@@ -146,9 +185,24 @@
     <a href="https://boletomovil.com" target="_blank">
         <div id="bm">
             <div style="margin-bottom: 10px">Haz click y compra tus boletos en</div>
-            <img id="bm_logo" src="BM_Dark.png">
+            <img id="bm_logo" src="images/BM_Dark.png">
         </div>
     </a>
+    <div class="button left">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" onclick="scrollToLeft()">
+            <path d="M15.41 16.09l-4.58-4.59 4.58-4.59L14 5.5l-6 6 6 6z"/>
+            <path d="M0-.5h24v24H0z" fill="none"/>
+        </svg>
+    </div>
+    <div id="events-container">
+
+    </div>
+    <div class="button right">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" onclick="scrollToRight()">
+            <path d="M8.59 16.34l4.58-4.59-4.58-4.59L10 5.75l6 6-6 6z"/>
+            <path d="M0-.25h24v24H0z" fill="none"/>
+        </svg>
+    </div>
 </div>
 </body>
 <script>
@@ -159,7 +213,7 @@
     });
     if(params.light) {
         document.querySelector('#container').className = 'light';
-        document.querySelector('#bm_logo').src = 'BM_Light.png'
+        document.querySelector('#bm_logo').src = 'images/BM_Light.png'
     }
     var req = new XMLHttpRequest();
     req.open('POST', 'https://bmapi.boletomovil.com/v2/get/events', true);
@@ -179,7 +233,7 @@
         events.filter(function(event) {
             return event.away_name && event.home_name
         }).map(event).forEach(function(event) {
-            document.querySelector('#container').innerHTML += event;
+            document.querySelector('#events-container').innerHTML += event;
         });
     }
 
@@ -221,6 +275,28 @@
             '<div>' + name + '</div>' +
             '</div>'
         )
+    }
+
+    function scrollToLeft() {
+        animate(function() {
+            document.querySelector('#events-container').scrollLeft -= 3;
+        })
+    }
+
+    function scrollToRight() {
+        animate(function() {
+            document.querySelector('#events-container').scrollLeft += 3;
+        })
+    }
+
+    function animate(func) {
+        var count = 85;
+        var interval = setInterval(function() {
+            func();
+            count--;
+            if(!count)
+                clearInterval(interval)
+        }, 1);
     }
 
 </script>
