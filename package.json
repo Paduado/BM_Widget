@@ -1,0 +1,11 @@
+{
+  "name": "bm_widget",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "s3-sync": "aws s3 sync ./ s3://widget.boletomovil.com --profile boletomovil --exclude '.*'",
+    "cf-invalidate": "aws cloudfront create-invalidation --distribution-id E106G9R1FC78XE --paths /\\* --profile boletomovil",
+    "deploy": "npm run s3-sync && npm run cf-invalidate"
+  }
+}
